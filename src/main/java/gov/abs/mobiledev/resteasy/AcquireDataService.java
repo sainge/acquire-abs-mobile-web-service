@@ -6,6 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
+
 //import java.io.BufferedReader;
 //import java.io.FileReader;
 //import java.io.IOException;
@@ -102,12 +104,13 @@ public class AcquireDataService {
 
 	@GET
 	@Path("/requestaddress/{collector_id}")
-	@Produces("text/plain")
-	public String requestaddress(@PathParam("collector_id") String collector_id) throws ClassNotFoundException{
+	@Produces("application/json")
+	@Mapped
+	public AddressDTO requestaddress(@PathParam("collector_id") String collector_id) throws ClassNotFoundException{
 
 		if(!initialised) initialise();
 
-		String db = "";
+		AddressDTO dto = new AddressDTO();
 
 		// load the sqlite-JDBC driver using the current class loader
 		Class.forName("org.sqlite.JDBC");
@@ -123,7 +126,6 @@ public class AcquireDataService {
 			ResultSet rs = statement.executeQuery("SELECT id FROM address WHERE status = 'N' LIMIT 1");
 			if(rs.next())
 			{
-
 				int address_id = rs.getInt("id");
 				statement.executeUpdate("UPDATE address SET collector_id = " + collector_id + ", status = 'A' WHERE id = " + address_id);
 
@@ -131,17 +133,13 @@ public class AcquireDataService {
 
 				while(rs.next())
 				{
-					// read the result set
-					db+= ("id = " + rs.getInt("id")) + "\n";
-					db+= ("address_text = " + rs.getString("address_text")) + "\n";
-					db+= ("latitude = " + rs.getDouble("latitude")) + "\n";
-					db+= ("longtitude = " + rs.getDouble("longtitude")) + "\n";
-					db+= ("status = " + rs.getString("status")) + "\n";
-					db+= ("collector_id = " + rs.getInt("collector_id")) + "\n";
-
+					dto.setId( rs.getInt("id"));
+					dto.setAddressText(rs.getString("address_text"));
+					dto.setLatitude(rs.getDouble("latitude"));
+					dto.setLongitude(rs.getDouble("longtitude"));
+					dto.setStatus(rs.getString("status"));
+					dto.setCollectorId(rs.getInt("collector_id"));
 				}
-			}else{
-				return "";
 			}
 		}
 		catch(SQLException e)
@@ -164,7 +162,7 @@ public class AcquireDataService {
 			}
 		}
 
-		return db;
+		return dto;
 
 	}
 

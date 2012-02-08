@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS ADDRESS;
+DROP TABLE IF EXISTS COLLECTOR;
+DROP TABLE IF EXISTS RESPONSE;
+DROP TABLE IF EXISTS RESPONSE_PERSON;
+
+
+CREATE TABLE ADDRESS ( id integer PRIMARY KEY, address_text text, latitude real, longtitude real, status text, collector_id integer, FOREIGN KEY(collector_id) REFERENCES collector(id) );
+CREATE TABLE COLLECTOR ( id integer PRIMARY KEY, name text );
+CREATE TABLE RESPONSE ( address_id integer, photo blob, q1 integer, q2 text, q3 integer, FOREIGN KEY(address_id) REFERENCES address(id));
+CREATE TABLE RESPONSE_PERSON ( address_id integer, name text, age integer, work text, FOREIGN KEY(address_id) REFERENCES address(id) );
+
+INSERT INTO ADDRESS VALUES (1 , "1 Example Street Adelaide SA 5000", 111.11, 111.11, 'N', NULL);
+INSERT INTO ADDRESS VALUES (2 , "2 Example Street Adelaide SA 5000", 222.22, 222.22, 'N', NULL);
+INSERT INTO ADDRESS VALUES (3 , "3 Example Street Adelaide SA 5000", 333.33, 333.33, 'N', NULL);
+INSERT INTO ADDRESS VALUES (4 , "4 Example Street Adelaide SA 5000", 444.44, 444.44, 'N', NULL);
+INSERT INTO ADDRESS VALUES (5 , "5 Example Street Adelaide SA 5000", 555.55, 555.55, 'N', NULL);
+
+INSERT INTO COLLECTOR VALUES (1, "Bruce Wayne");
+INSERT INTO COLLECTOR VALUES (2, "Alfred Pennyworth");
+INSERT INTO COLLECTOR VALUES (3, "Lucis Fox");

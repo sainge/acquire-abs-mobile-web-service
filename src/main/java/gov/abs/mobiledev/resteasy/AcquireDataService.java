@@ -54,12 +54,25 @@ public class AcquireDataService {
 			Statement statement = connection.createStatement();
 			statement.setQueryTimeout(30);  // set timeout to 30 sec.
 
-			ResultSet rs = statement.executeQuery("SELECT id FROM address WHERE status = 'N' LIMIT 1");
-			if(rs.next())
+			ResultSet rs;
+			int address_id = -1;
+			
+			rs = statement.executeQuery("SELECT id FROM address WHERE status = 'A' and collector_id = " + collector_id);
+			if (rs.next()){
+				address_id = rs.getInt("id");
+			}
+			else
 			{
-				int address_id = rs.getInt("id");
-				statement.executeUpdate("UPDATE address SET collector_id = " + collector_id + ", status = 'A' WHERE id = " + address_id);
+				rs = statement.executeQuery("SELECT id FROM address WHERE status = 'N' LIMIT 1");
+				if(rs.next())
+				{
+					address_id = rs.getInt("id");
+					statement.executeUpdate("UPDATE address SET collector_id = " + collector_id + ", status = 'A' WHERE id = " + address_id);
+				}
+			}
 
+			if (address_id > -1)
+			{
 				rs = statement.executeQuery("SELECT * FROM address WHERE id = " + address_id);
 
 				if(rs.next())
@@ -72,6 +85,7 @@ public class AcquireDataService {
 					dto.setCollectorId(rs.getInt("collector_id"));
 				}
 			}
+			
 		}
 		catch(SQLException e)
 		{
@@ -125,6 +139,8 @@ public class AcquireDataService {
 
 			String query = "INSERT INTO response VALUES (" + address_id + ", \"" + photo + "\", " + q1 + ", \"" + q2 + "\", " + q3 + ")";
 			statement.executeUpdate(query);
+			
+			statement.executeUpdate("update address set status='S' where id=" + address_id);
 
 			// ALSO NEED TO UPDATE THE STATUS OF THE ADDRESS
 		}

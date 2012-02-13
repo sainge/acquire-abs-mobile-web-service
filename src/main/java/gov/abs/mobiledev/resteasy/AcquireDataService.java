@@ -35,14 +35,7 @@ public class AcquireDataService {
 		Connection connection = null;
 		try
 		{
-			
-			String collector_id = null;
-			
-			if(username.equals(password)){
-				collector_id = username;
-			}else{
-				return dto;
-			}
+						
 
 			// create a database connection
 			javax.naming.Context ctx = new javax.naming.InitialContext();
@@ -56,6 +49,17 @@ public class AcquireDataService {
 
 			ResultSet rs;
 			int address_id = -1;
+			int collector_id = -1;
+			
+			rs = statement.executeQuery("SELECT id FROM collector WHERE name = \"" + username + "\" AND password = \"" + password + "\"");
+			if(rs.next()){
+				collector_id = rs.getInt("id");
+			}
+			
+			// not legit username / password combination
+			if(collector_id == -1){
+				return dto;
+			}
 			
 			rs = statement.executeQuery("SELECT id FROM address WHERE status = 'A' and collector_id = " + collector_id);
 			if (rs.next()){
@@ -141,8 +145,6 @@ public class AcquireDataService {
 			statement.executeUpdate(query);
 			
 			statement.executeUpdate("update address set status='S' where id=" + address_id);
-
-			// ALSO NEED TO UPDATE THE STATUS OF THE ADDRESS
 		}
 		catch(SQLException e)
 		{

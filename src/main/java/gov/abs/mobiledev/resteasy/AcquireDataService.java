@@ -7,7 +7,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.providers.jaxb.json.Mapped;
@@ -16,13 +15,8 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-//import java.io.BufferedReader;
-//import java.io.FileReader;
-//import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +93,7 @@ public class AcquireDataService {
 				}
 			}
 
-			return dto;
+			return null;
 
 		}
 		catch(SQLException e)
@@ -108,7 +102,6 @@ public class AcquireDataService {
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally
@@ -128,55 +121,6 @@ public class AcquireDataService {
 		return null; 
 
 	}
-
-
-	//	
-	//	public Response uploadFile() {
-	//
-	//		Connection connection = null;
-	//
-	//		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-	//		List<InputPart> inputParts = uploadForm.get("uploadedFile");
-	//
-	//		for (InputPart inputPart : inputParts) {
-	//
-	//			try {
-	//
-	//				//convert the uploaded file to inputstream
-	//				InputStream inputStream = inputPart.getBody(InputStream.class,null);
-	//
-	//				byte [] bytes = IOUtils.toByteArray(inputStream);
-	//
-	//				//constructs upload file path
-	//				javax.naming.Context ctx = new javax.naming.InitialContext();
-	//				javax.sql.DataSource ds = (javax.sql.DataSource)
-	//						ctx.lookup("java:comp/env/jdbc/AcquireMobileDevDB");
-	//				connection = ds.getConnection();
-	//
-	//				PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO response VALUES (?, ?, ?, ?, ?);");
-	//				preparedStatement.setInt(1, 1);
-	//				preparedStatement.setBytes(2, bytes);
-	//				preparedStatement.setInt(3,1);
-	//				preparedStatement.setString(4,"House");
-	//				preparedStatement.setInt(5,1);
-	//
-	//				preparedStatement.executeUpdate();
-	//
-	//			} catch (IOException e) {
-	//				e.printStackTrace();
-	//			} catch (NamingException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			} catch (SQLException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			}
-	//
-	//		}
-	//
-	//		return Response.status(200)
-	//				.entity("uploadFile is called, Uploaded file name : ").build();
-	//	}
 
 	@POST
 	@Consumes("multipart/form-data")
@@ -230,10 +174,8 @@ public class AcquireDataService {
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally
@@ -285,7 +227,6 @@ public class AcquireDataService {
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally
@@ -361,7 +302,6 @@ public class AcquireDataService {
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally
@@ -404,10 +344,8 @@ public class AcquireDataService {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally
 		{
@@ -423,120 +361,6 @@ public class AcquireDataService {
 			}
 		}
 
-		return Response.status(Response.Status.NOT_FOUND) .type(TEXT_PLAIN) .entity("... error message ...") .build();
+		return Response.status(Response.Status.NOT_FOUND) .type(TEXT_PLAIN) .entity("No Photo exists for that Address.") .build();
 	}
-
-
-	//	@GET
-	//	@Path("/image/{image}")
-	//	public Response image(@PathParam("image") String image){
-	//
-	//		Connection connection = null;
-	//
-	//		try {
-	//
-	//			RandomAccessFile f = new RandomAccessFile("C:\\Users\\Public\\Pictures\\Sample Pictures\\"+image, "r");
-	//			byte[] b = new byte[(int)f.length()];
-	//			f.read(b);
-	//
-	//
-	//			javax.naming.Context ctx = new javax.naming.InitialContext();
-	//			javax.sql.DataSource ds = (javax.sql.DataSource)
-	//					ctx.lookup("java:comp/env/jdbc/AcquireMobileDevDB");
-	//			connection = ds.getConnection();
-	//
-	//			PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO response VALUES (?, ?, ?, ?, ?);");
-	//			preparedStatement.setInt(1, 1);
-	//			preparedStatement.setBytes(2, b);
-	//			preparedStatement.setInt(3,1);
-	//			preparedStatement.setString(4,"House");
-	//			preparedStatement.setInt(5,1);
-	//
-	//			preparedStatement.executeUpdate();
-	//
-	//			Statement statement = connection.createStatement();
-	//			ResultSet rs = statement.executeQuery("SELECT * FROM response WHERE address_id = 1");
-	//
-	//			if(rs.next()){
-	//				return Response.ok(rs.getBytes("photo"), "*/*").build();
-	//			}
-	//
-	//		} catch (SQLException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		} catch (NamingException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		} catch (FileNotFoundException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		} catch (IOException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		}finally
-	//		{
-	//			try
-	//			{
-	//				if(connection != null)
-	//					connection.close();
-	//			}
-	//			catch(SQLException e)
-	//			{
-	//				// connection close failed.
-	//				System.err.println(e);
-	//			}
-	//		}
-	//
-	//		return Response.status(Response.Status.NOT_FOUND) .type(TEXT_PLAIN) .entity("... error message ...") .build();
-	//	}
-
-	//	@POST
-	//	@Path("/upload")
-	//	@Consumes("multipart/form-data")
-	//	public Response uploadFile(MultipartFormDataInput input) {
-	//
-	//		Connection connection = null;
-	//
-	//		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-	//		List<InputPart> inputParts = uploadForm.get("uploadedFile");
-	//
-	//		for (InputPart inputPart : inputParts) {
-	//
-	//			try {
-	//
-	//				//convert the uploaded file to inputstream
-	//				InputStream inputStream = inputPart.getBody(InputStream.class,null);
-	//
-	//				byte [] bytes = IOUtils.toByteArray(inputStream);
-	//
-	//				//constructs upload file path
-	//				javax.naming.Context ctx = new javax.naming.InitialContext();
-	//				javax.sql.DataSource ds = (javax.sql.DataSource)
-	//						ctx.lookup("java:comp/env/jdbc/AcquireMobileDevDB");
-	//				connection = ds.getConnection();
-	//
-	//				PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO response VALUES (?, ?, ?, ?, ?);");
-	//				preparedStatement.setInt(1, 1);
-	//				preparedStatement.setBytes(2, bytes);
-	//				preparedStatement.setInt(3,1);
-	//				preparedStatement.setString(4,"House");
-	//				preparedStatement.setInt(5,1);
-	//
-	//				preparedStatement.executeUpdate();
-	//
-	//			} catch (IOException e) {
-	//				e.printStackTrace();
-	//			} catch (NamingException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			} catch (SQLException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			}
-	//
-	//		}
-	//
-	//		return Response.status(200)
-	//				.entity("uploadFile is called, Uploaded file name : ").build();
-	//	}
 }

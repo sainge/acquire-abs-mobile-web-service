@@ -59,6 +59,5 @@ public class AddressDTO {
 	}
 	public void setCollectorId(int collectorId) {
 		this.collectorId = collectorId;
-	}
-	
+	}	
 }

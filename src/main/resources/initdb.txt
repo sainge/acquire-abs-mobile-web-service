@@ -3,7 +3,6 @@ DROP TABLE IF EXISTS COLLECTOR;
 DROP TABLE IF EXISTS RESPONSE;
 DROP TABLE IF EXISTS RESPONSE_PERSON;
 
-
 CREATE TABLE ADDRESS ( id integer PRIMARY KEY, address_text text, latitude real, longtitude real, status text, collector_id integer, FOREIGN KEY(collector_id) REFERENCES collector(id) );
 CREATE TABLE COLLECTOR ( id integer PRIMARY KEY, name text, password text);
 CREATE TABLE RESPONSE ( address_id integer, photo blob, q1 integer, q2 text, q3 integer, FOREIGN KEY(address_id) REFERENCES address(id));

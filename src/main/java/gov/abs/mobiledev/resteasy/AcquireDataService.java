@@ -192,6 +192,57 @@ public class AcquireDataService {
 			}
 		}
 	}
+	
+	@POST
+	@Consumes("application/json")
+	@Path("/uploadresponsej")
+	public void uploadresponsejson(ResponseDTO response) throws ClassNotFoundException, SQLException, NamingException{
+
+		// load the sqlite-JDBC driver using the current class loader
+		Class.forName("org.sqlite.JDBC");
+
+		Connection connection = null;
+		try
+		{
+				// create a database connection
+				javax.naming.Context ctx = new javax.naming.InitialContext();
+				javax.sql.DataSource ds = (javax.sql.DataSource)
+						ctx.lookup("java:comp/env/jdbc/AcquireMobileDevDB");
+				connection = ds.getConnection();			
+
+				PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO response VALUES (?, ?, ?, ?, ?);");
+				preparedStatement.setInt(1, Integer.parseInt(response.getAddressId()));
+				preparedStatement.setBytes(2, response.getPhoto());
+				preparedStatement.setInt(3, Integer.parseInt(response.getQ1()));
+				preparedStatement.setString(4, response.getQ2());
+				preparedStatement.setInt(5, Integer.parseInt(response.getQ3()));
+
+				preparedStatement.executeUpdate();
+		}
+		catch(SQLException e)
+		{
+			// if the error message is "out of memory", 
+			// it probably means no database file is found
+			System.err.println(e.getMessage());
+			throw e;
+		} catch (NamingException e) {
+			e.printStackTrace();
+			throw e;
+		}
+		finally
+		{
+			try
+			{
+				if(connection != null)
+					connection.close();
+			}
+			catch(SQLException e)
+			{
+				// connection close failed.
+				System.err.println(e);
+			}
+		}
+	}
 
 	@POST
 	@Path("/uploadresponseperson/{address_id}/{name}/{age}/{work}")

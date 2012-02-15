@@ -93,7 +93,7 @@ public class AcquireDataService {
 				}
 			}
 
-			return null;
+			return dto;
 
 		}
 		catch(SQLException e)
